@@ -82,4 +82,8 @@ def get_tags(hostname: str, token: str, run_id: str, delimiter: str):
 
 
 if __name__ == "__main__":
-    cli()
+    try:
+        cli()
+    except Exception as err:
+        print(str(err))
+        sys.exit(1)
