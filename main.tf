@@ -26,7 +26,7 @@ variable "organization_name" {
 
 variable "tags" {
   type = list(string)
-  default = ["first-key:first-value"]
+  default = ["first-key_first-value"]
 }
 
 data "scalr_environment" "demo" {
@@ -77,4 +77,11 @@ resource "scalr_workspace" "dynamic-tags" {
   provider_configuration {
     id = module.aws-account-scalr-configuration.configuration_id
   }
+}
+
+resource "scalr_variable" "delimiter" {
+  key = "TAG_DELIMITER"
+  value = "_"
+  workspace_id = scalr_workspace.dynamic-tags.id
+  category = "shell"
 }

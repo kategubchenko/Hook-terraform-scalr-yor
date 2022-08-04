@@ -33,11 +33,25 @@ def cli():
     multiple=False,
     help="Run identifier",
 )
-def get_tags(hostname: str, token: str, run_id: str):
-    run = requests.get(
-        f"https://{hostname}/api/iacp/v3/runs/{run_id}?include=workspace,vcs-revision",
-        headers={"Authorization": f"Bearer {token}", "Prefer": "profile=preview"}
-    ).json()
+@click.option(
+    "-d",
+    "--delimiter",
+    type=str,
+    multiple=False,
+    help="Run identifier",
+)
+def get_tags(hostname: str, token: str, run_id: str, delimiter: str):
+    def _fetch(route):
+        response = requests.get(
+            f"https://{hostname}/api/iacp/v3/{route}",
+            headers={"Authorization": f"Bearer {token}", "Prefer": "profile=preview"}
+        )
+        document = response.json()
+        if response.status_code != 200:
+            raise Exception(json.dumps(document, indent=2))
+        return document
+
+    run = _fetch(f"runs/{run_id}?include=workspace,vcs-revision")
 
     run_attributes = run["data"]["attributes"]
     tags = {"run_id": run_id, "source": run_attributes["source"], "created-at": run_attributes["created-at"]}
@@ -50,12 +64,18 @@ def get_tags(hostname: str, token: str, run_id: str):
                 "workspace_name": attributes["name"],
                 "environment_id": val["relationships"]["environment"]["data"]["id"],
             })
-
-            if attributes["tags"]:
-                tags.update(attributes["tags"])
-
+            tag_ids = []
+            for tag in val["relationships"].get("tags", {"data": []})["data"]:
+                tag_ids.append(tag["id"])
+            workspace_tags = _fetch(f"tags?filter[tag]=in:{','.join(tag_ids)}")
+            for ws_tag in workspace_tags["data"]:
+                name: str = ws_tag["attributes"]["name"]
+                chunks = name.split(delimiter)
+                tags.update({chunks[0]: chunks[1]})
         elif val["type"] == "vcs-revisions":
             tags.update(val["attributes"])
+        elif val["type"] == "tags":
+            tags.update({})
 
     print(json.dumps(tags))
     sys.exit(0)
