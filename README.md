@@ -1,4 +1,4 @@
-# UPDATED Scalr integration with Bridgecrew Yor via custom hooks
+# Scalr integration with Bridgecrew Yor via custom hooks
 
 This example shows how to integrate Scalr and Bridgecrew/yor using Custom hooks. 
 It helps users to tag all supported resources with dynamic tags. 
