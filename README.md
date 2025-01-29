@@ -18,3 +18,4 @@ Pre-plan script will auto-populate tags:
 * vcs meta-data if a run is associated with a VCS revision: commit SHA and message, branch, repository, etc.
 
 NOTE: if the hook is executed locally users have you download respective yor release. 
+nvb
