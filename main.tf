@@ -24,11 +24,6 @@ variable "organization_name" {
   type = string
 }
 
-#variable "tags" {
-#  type    = list(string)
-#  default = ["first-key:first-value", "second-key:second-value"]
-#}
-
 variable "tag_count" {
   sensitive = false
 }
@@ -49,17 +44,6 @@ resource "scalr_tag" "example" {
   account_id = var.account_id
 }
 
-# module "aws-account-scalr-configuration" {
-#  source = "github.com/Scalr/terraform-scalr-provider-configuration-aws"
-#
-#  name = "scalr-managed-aws-account-configuration"
-#  role_name = "ScalrProviderConfigurationTags"
-#  scalr_account_id = var.account_id
-
-  # policy permissions are required for the module-created role
-#  policy_permissions = ["ec2:*"]
-#}
-
 resource "scalr_workspace" "dynamic-tags" {
   name = "dynamic-tags"
   environment_id = data.scalr_environment.demo.id
@@ -76,13 +60,8 @@ resource "scalr_workspace" "dynamic-tags" {
     pre_plan = "bash ./pre-plan.sh"
   }
 
-  # tag_ids = scalr_tag.example.*.id
    tag_ids = scalr_tag.example[*].id
-
-#  provider_configuration {
- #   id = module.aws-account-scalr-configuration.configuration_id
-#  }
-#}
+}
 
 resource "scalr_variable" "delimiter" {
   key = "TAG_DELIMITER"
