@@ -24,9 +24,13 @@ variable "organization_name" {
   type = string
 }
 
-variable "tags" {
-  type    = list(string)
-  default = ["first-key:first-value", "second-key:second-value"]
+#variable "tags" {
+#  type    = list(string)
+#  default = ["first-key:first-value", "second-key:second-value"]
+#}
+
+variable "tag_count" {
+  sensitive = false
 }
 
 data "scalr_environment" "demo" {
@@ -40,10 +44,8 @@ data "scalr_vcs_provider" "demo" {
 }
 
 resource "scalr_tag" "example" {
-  count = length(var.tags)
-
-  name       = split(":", var.tags[count.index])[0]
-  value      = split(":", var.tags[count.index])[1]
+  count = var.tag_count
+  name = "tag-${count.index}"
   account_id = var.account_id
 }
 
@@ -74,7 +76,8 @@ resource "scalr_workspace" "dynamic-tags" {
     pre_plan = "bash ./pre-plan.sh"
   }
 
-  tag_ids = scalr_tag.example.*.id
+  # tag_ids = scalr_tag.example.*.id
+   tag_ids = scalr_tag.example[*].id
 
   provider_configuration {
     id = module.aws-account-scalr-configuration.configuration_id
