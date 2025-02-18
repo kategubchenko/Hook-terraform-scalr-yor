@@ -13,7 +13,7 @@ variable "account_id" {
 
 variable "env_name" {
   type = string
-  default = "Environment A"
+  default = "Environment-A"
 }
 
 variable "vcs_name" {
