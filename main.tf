@@ -51,7 +51,7 @@ resource "scalr_workspace" "dynamic-tags" {
   working_directory = "example"
 
   vcs_repo {
-    identifier = "${var.organization_name}/terraform-scalr-yor"
+    identifier = "${var.organization_name}/Hook-terraform-scalr-yor"
     branch = "main"
     trigger_prefixes = ["example"]
   }
