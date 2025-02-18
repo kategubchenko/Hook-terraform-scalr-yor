@@ -25,8 +25,8 @@ variable "organization_name" {
 }
 
 variable "tags" {
-  type = list(string)
-  default = ["first-key_first-value"]
+  type    = list(string)
+  default = ["first-key:first-value", "second-key:second-value"]
 }
 
 data "scalr_environment" "demo" {
@@ -41,7 +41,9 @@ data "scalr_vcs_provider" "demo" {
 
 resource "scalr_tag" "example" {
   count = length(var.tags)
-  name       = var.tags[count.index]
+
+  name       = split(":", var.tags[count.index])[0]
+  value      = split(":", var.tags[count.index])[1]
   account_id = var.account_id
 }
 
