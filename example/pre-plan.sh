@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -e
 pip3 install requests click --quiet
 
 export YOR_SIMPLE_TAGS="$(python3 scripts.py get-tags -h $SCALR_HOSTNAME -t $SCALR_TOKEN -r $SCALR_RUN_ID -d $TAG_DELIMITER)"
